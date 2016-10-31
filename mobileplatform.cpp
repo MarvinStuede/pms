@@ -32,7 +32,8 @@ void MobilePlatform::stopMotion()
   emit logMsg("Stopping");
 }
 
-int MobilePlatform::setPWM()
+int MobilePlatform::setPWM(int spnbxValue)
 {
-    return 1;
+
+  return spnbxValue;
 }

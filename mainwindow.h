@@ -26,6 +26,7 @@ signals:
     void btnRight_clicked();
     void btnStop_clicked();
     void btnLine_clicked();
+    void spnboxSpeed_valueChanged(int);
 
 private:
      Ui::MainWindow *ui;

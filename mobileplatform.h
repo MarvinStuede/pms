@@ -2,18 +2,20 @@
 #define MOBILEPLATFORM_H
 
 #include <QObject>
+#include <sstream>
+#include <string>
 
 class MobilePlatform : public QObject
 {
     Q_OBJECT
 public:
     explicit MobilePlatform(QObject *parent = 0);
-    static const int nMotAPin1 = 2;
-    static const int nMotAPin2 = 3;
-    static const int nMotAPinPWM = 0;
-    static const int nMotBPin1 = 10;
-    static const int nMotBPin2 = 11;
-    static const int nMotBPinPWM = 6;
+    static const int nMotorLeft_Pin1 = 2;
+    static const int nMotorLeft_Pin2 = 3;
+    static const int nMotorLeft_PinPWM = 0;
+    static const int nMotorRight_Pin1 = 10;
+    static const int nMotorRight_Pin2 = 11;
+    static const int nMotorRight_PinPWM = 6;
 signals:
     void logMsg(const QString& msg);
 public slots:
@@ -22,7 +24,7 @@ public slots:
     void turnLeft();
     void turnRight();
     void stopMotion();
-    int setPWM();
+    int setPWM(int spnbxValue);
 
 };
 
