@@ -7,7 +7,8 @@
 QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
-
+#INCLUDEPATH +=../wiringPI/wiringPI
+#LIBS   += -L../wiringPI/wiringPI -lwiringPi
 TARGET = PMS_GUI_Ubuntu
 TEMPLATE = app
 DESTDIR = ./bin
@@ -19,10 +20,15 @@ UI_DIR = ./temp
 SOURCES += main.cpp\
         mainwindow.cpp \
     controlsystem.cpp \
-    mobileplatform.cpp
+    mobileplatform.cpp \
+    dcmotor.cpp
 
 HEADERS  += mainwindow.h \
     controlsystem.h \
-    mobileplatform.h
+    mobileplatform.h \
+    dcmotor.h
 
 FORMS    += mainwindow.ui
+
+RESOURCES += \
+    resources/images.qrc

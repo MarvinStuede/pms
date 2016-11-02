@@ -4,18 +4,19 @@
 #include <QObject>
 #include <sstream>
 #include <string>
+#include "dcmotor.h"
 
 class MobilePlatform : public QObject
 {
     Q_OBJECT
 public:
     explicit MobilePlatform(QObject *parent = 0);
-    static const int nMotorLeft_Pin1 = 2;
-    static const int nMotorLeft_Pin2 = 3;
-    static const int nMotorLeft_PinPWM = 0;
-    static const int nMotorRight_Pin1 = 10;
-    static const int nMotorRight_Pin2 = 11;
-    static const int nMotorRight_PinPWM = 6;
+    static const int nMotorLeftPin1 = 2;
+    static const int nMotorLeftPin2 = 3;
+    static const int nMotorLeftPinPWM = 0;
+    static const int nMotorRightPin1 = 10;
+    static const int nMotorRightPin2 = 11;
+    static const int nMotorRightPinPWM = 6;
 signals:
     void logMsg(const QString& msg);
 public slots:
@@ -24,7 +25,11 @@ public slots:
     void turnLeft();
     void turnRight();
     void stopMotion();
+    void initializeGPIO();
     int setPWM(int spnbxValue);
+private:
+    DCMotor MotorLeft;
+    DCMotor MotorRight;
 
 };
 

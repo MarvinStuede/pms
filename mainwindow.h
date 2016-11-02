@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QStringListModel>
 
+
 namespace Ui {
 class MainWindow;
 }
@@ -31,7 +32,6 @@ signals:
 private:
      Ui::MainWindow *ui;
      QStringListModel logging_model;
-
 };
 
 #endif // MAINWINDOW_H
