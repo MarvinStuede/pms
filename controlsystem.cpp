@@ -7,8 +7,6 @@ ControlSystem::ControlSystem(QObject *parent) :
     m_pMainWindow = new MainWindow();
     m_pMainWindow->show();
 
-
-
     QObject::connect(m_pMainWindow,SIGNAL(btnForward_clicked()),m_pMobilePlatform,SLOT(moveForward()));
     QObject::connect(m_pMainWindow,SIGNAL(btnBackward_clicked()),m_pMobilePlatform,SLOT(moveBackward()));
     QObject::connect(m_pMainWindow,SIGNAL(btnRight_clicked()),m_pMobilePlatform,SLOT(turnRight()));

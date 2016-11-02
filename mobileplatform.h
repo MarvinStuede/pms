@@ -30,7 +30,6 @@ public slots:
 private:
     DCMotor MotorLeft;
     DCMotor MotorRight;
-
 };
 
 #endif // MOBILEPLATFORM_H

@@ -1,5 +1,9 @@
 <RCC>
-    <qresource prefix="/" >
+    <qresource prefix="/">
         <file>images/left.svg</file>
+        <file>images/down.svg</file>
+        <file>images/right.svg</file>
+        <file>images/stop.svg</file>
+        <file>images/up.svg</file>
     </qresource>
 </RCC>
