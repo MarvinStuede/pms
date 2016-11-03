@@ -15,12 +15,12 @@ public:
   int getPWM();
 
 private:
-  int m_pinMotorA;
-  int m_pinMotorB;
-  int m_pinMotorE;
-  int m_pwm;
-  static const int nMaxPWM = 255;
-  static const int nMinPWM = 0;
+  int m_nPinMotorA;
+  int m_nPinMotorB;
+  int m_nPinMotorE;
+  int m_nPWM;
+  static const int m_nMaxPWM = 255;
+  static const int m_nMinPWM = 0;
 };
 
 #endif // DCMOTOR_H

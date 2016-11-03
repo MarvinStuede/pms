@@ -21,12 +21,14 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     controlsystem.cpp \
     mobileplatform.cpp \
-    dcmotor.cpp
+    dcmotor.cpp \
+    linesensor.cpp
 
 HEADERS  += mainwindow.h \
     controlsystem.h \
     mobileplatform.h \
-    dcmotor.h
+    dcmotor.h \
+    linesensor.h
 
 FORMS    += mainwindow.ui
 

@@ -2,29 +2,41 @@
 
 MobilePlatform::MobilePlatform(QObject *parent) :
     QObject(parent)
-  ,MotorLeft(nMotorLeftPin1,nMotorLeftPin2,nMotorLeftPinPWM)
-  ,MotorRight(nMotorRightPin1,nMotorRightPin2,nMotorRightPinPWM)
+  ,MotorLeft(s_nMotorLeftPin1,s_nMotorLeftPin2,s_nMotorLeftPinPWM)
+  ,MotorRight(s_nMotorRightPin1,s_nMotorRightPin2,s_nMotorRightPinPWM)
+  ,LineSensorLeft(s_nLineSensorLeft)
+  ,LineSensorRight(s_nLineSensorRight)
 {
-
+  bFollowing = false;
 }
 void MobilePlatform::initializeGPIO()
 {
 
   /*if(wiringPiSetup() == -1){
       emit logMsg("GPIO Pin Setup failed");
-      emit logMsg("Motors not initialized");
+      emit logMsg("Motors and Sensors not initialized");
       return;
   }*/
 
   if(MotorLeft.initPins())
-      emit logMsg("Left Motor initialized");
+      emit logMsg("Left motor initialized");
   else
-      emit logMsg("Left Motor not initialized");
+      emit logMsg("Left motor not initialized");
 
   if(MotorRight.initPins())
-      emit logMsg("Right Motor initialized");
+      emit logMsg("Right motor initialized");
   else
-      emit logMsg("Right Motor not initialized");
+      emit logMsg("Right motor not initialized");
+
+  if(LineSensorLeft.initPin())
+      emit logMsg("Left line sensor initialized");
+  else
+      emit logMsg("Left line sensor not initialized");
+
+  if(LineSensorRight.initPin())
+      emit logMsg("Right line sensor initialized");
+  else
+      emit logMsg("Right line sensor not initialized");
 }
 
 void MobilePlatform::moveForward()
@@ -62,6 +74,17 @@ void MobilePlatform::stopMotion()
   emit logMsg("Stopping");
 }
 
+void MobilePlatform::startLineFollowing()
+{
+  if(!bFollowing)
+  {
+    bFollowing = true;
+    emit followingTriggered(true);
+    followLine();
+  }
+  else emit followingTriggered(false);
+}
+
 int MobilePlatform::setPWM(int spnbxValue)
 {
   int nLeft = MotorLeft.setPWM(spnbxValue);
@@ -71,4 +94,31 @@ int MobilePlatform::setPWM(int spnbxValue)
   ssOut << "Set PWM: Left Motor: "<< nLeft << ", Right Motor: " << nRight;
   emit logMsg(QString::fromStdString(ssOut.str()));
   return nLeft;
+}
+
+void MobilePlatform::followLine()
+{
+  while(bFollowing)
+  {
+    bool bLeftSensorWhite = LineSensorLeft.getStatus();
+    bool bRightSensorWhite = LineSensorRight.getStatus();
+    if (bLeftSensorWhite && bRightSensorWhite){
+
+    }
+    else if (!bLeftSensorWhite && bRightSensorWhite){
+
+    }
+    else if (bLeftSensorWhite && !bRightSensorWhite){
+
+    }
+    else if (!bLeftSensorWhite && !bRightSensorWhite){
+
+    }
+    else{
+      emit logMsg("[ERROR]: Line Sensor Output not catched");
+    }
+
+
+    qApp->processEvents();
+  }
 }

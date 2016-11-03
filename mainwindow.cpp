@@ -7,22 +7,39 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->listOutput->setModel(&logging_model);
-    QObject::connect(ui->btnForward,SIGNAL(clicked()),this,SIGNAL(btnForward_clicked()));
-    QObject::connect(ui->btnBackward,SIGNAL(clicked()),this,SIGNAL(btnBackward_clicked()));
-    QObject::connect(ui->btnRight,SIGNAL(clicked()),this,SIGNAL(btnRight_clicked()));
-    QObject::connect(ui->btnLeft,SIGNAL(clicked()),this,SIGNAL(btnLeft_clicked()));
-    QObject::connect(ui->btnStop,SIGNAL(clicked()),this,SIGNAL(btnStop_clicked()));
-    QObject::connect(ui->btnLine,SIGNAL(clicked()),this,SIGNAL(btnLine_clicked()));
-    QObject::connect(ui->spnbxSpeed,SIGNAL(valueChanged(int)),this,SIGNAL(spnboxSpeed_valueChanged(int)));
+    connect(ui->btnForward,SIGNAL(clicked()),this,SIGNAL(sgnForward()));
+    connect(ui->btnBackward,SIGNAL(clicked()),this,SIGNAL(sgnBackward()));
+    connect(ui->btnRight,SIGNAL(clicked()),this,SIGNAL(sgnRight()));
+    connect(ui->btnLeft,SIGNAL(clicked()),this,SIGNAL(sgnLeft()));
+    connect(ui->btnStop,SIGNAL(clicked()),this,SIGNAL(sgnStop()));
+    connect(ui->btnLine,SIGNAL(clicked()),this,SIGNAL(sgnLine()));
+    connect(ui->spnbxSpeed,SIGNAL(valueChanged(int)),this,SIGNAL(spnboxSpeed_valueChanged(int)));
+
+    //Keyboardshortcuts
+    QShortcut *scW = new QShortcut(QKeySequence("W"),this);
+    connect(scW,SIGNAL(activated()),this,SIGNAL(sgnForward()));
+
+    QShortcut *scA = new QShortcut(QKeySequence("A"),this);
+    connect(scA,SIGNAL(activated()),this,SIGNAL(sgnLeft()));
+
+    QShortcut *scS = new QShortcut(QKeySequence("S"),this);
+    connect(scS,SIGNAL(activated()),this,SIGNAL(sgnBackward()));
+
+    QShortcut *scD = new QShortcut(QKeySequence("D"),this);
+    connect(scD,SIGNAL(activated()),this,SIGNAL(sgnRight()));
+
+    QShortcut *scSpace = new QShortcut(QKeySequence("Space"),this);
+    connect(scSpace,SIGNAL(activated()),this,SIGNAL(sgnStop()));
 
 }
 
 MainWindow::~MainWindow()
 {
+
   delete ui;
 }
 
-void MainWindow::log(const QString &msg)
+void MainWindow::logMessage(const QString &msg)
 {//Insert "msg" into list-element, used for logging
 
   //Insert new row
@@ -34,4 +51,14 @@ void MainWindow::log(const QString &msg)
   if(logging_model.rowCount() > 100) logging_model.removeRow(0);
 
   ui->listOutput->scrollToBottom();
+}
+
+void MainWindow::logLineResponse(bool bResponse)
+{
+  if(bResponse) logMessage("Line following started");
+  else logMessage("Line following already started");
+}
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+  emit sgnStop();
 }

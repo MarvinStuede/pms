@@ -2,23 +2,23 @@
 
 DCMotor::DCMotor(int pinMotorA, int pinMotorB, int pinMotorE)
 {
-    m_pinMotorA=pinMotorA;
-    m_pinMotorB=pinMotorB;
-    m_pinMotorE=pinMotorE;
-    m_pwm=40;
+    m_nPinMotorA=pinMotorA;
+    m_nPinMotorB=pinMotorB;
+    m_nPinMotorE=pinMotorE;
+    m_nPWM=40;
 }
 
 bool DCMotor::initPins()
 {
-    bool bCondA = m_pinMotorA <= 30 && !(m_pinMotorA < 0);
-    bool bCondB = m_pinMotorB <= 30 && !(m_pinMotorB < 0);
-    bool bCondE = m_pinMotorE <= 30 && !(m_pinMotorE < 0);
+    bool bCondA = m_nPinMotorA <= 29 && !(m_nPinMotorA < 0);
+    bool bCondB = m_nPinMotorB <= 29 && !(m_nPinMotorB < 0);
+    bool bCondE = m_nPinMotorE <= 29 && !(m_nPinMotorE < 0);
     if(bCondA && bCondB && bCondE)
     {
-       /* pinMode(m_pinMotorA,OUTPUT);
-        pinMode(m_pinMotorB,OUTPUT);
-        pinMode(m_pinMotorE,PWM_OUTPUT);
-        softPwmCreate(m_pinMotorE,nMinPWM,nMaxPWM);*/
+       /* pinMode(m_nPinMotorA,OUTPUT);
+        pinMode(m_nPinMotorB,OUTPUT);
+        pinMode(m_nPinMotorE,PWM_OUTPUT);
+        softPwmCreate(m_nPinMotorE,nMinPWM,nMaxPWM);*/
         return true;
     }
     else return false;
@@ -26,35 +26,35 @@ bool DCMotor::initPins()
 
 void DCMotor::forward()
 {
-    /*digitalWrite(m_pinMotorA,0);
-    digitalWrite(m_pinMotorB,1);
-    softPwmWrite(m_pinMotorE,m_pwm);*/
+    /*digitalWrite(m_nPinMotorA,0);
+    digitalWrite(m_nPinMotorB,1);
+    softPwmWrite(m_nPinMotorE,m_pwm);*/
 }
 
 void DCMotor::backward()
 {
-   /* digitalWrite(m_pinMotorA,1);
-    digitalWrite(m_pinMotorB,0);
-    softPwmWrite(m_pinMotorE,m_pwm);*/
+   /* digitalWrite(m_nPinMotorA,1);
+    digitalWrite(m_nPinMotorB,0);
+    softPwmWrite(m_nPinMotorE,m_pwm);*/
 }
 
 void DCMotor::stop()
 {
-   // softPwmWrite(m_pinMotorE,0);
+   // softPwmWrite(m_nPinMotorE,0);
 }
 
-int DCMotor::setPWM(const int pwm)
+int DCMotor::setPWM(const int nPWM)
 {
-  if(pwm < nMinPWM)
-    m_pwm = nMinPWM;
-  else if(pwm > nMaxPWM)
-    m_pwm = nMaxPWM;
+  if(nPWM < m_nMinPWM)
+    m_nPWM = m_nMinPWM;
+  else if(nPWM > m_nMaxPWM)
+    m_nPWM = m_nMaxPWM;
   else
-    m_pwm = pwm;
-  return m_pwm;
+    m_nPWM = nPWM;
+  return m_nPWM;
 }
 
 int DCMotor::getPWM()
 {
-    return m_pwm;
+    return m_nPWM;
 }

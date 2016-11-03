@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QStringListModel>
+#include <QShortcut>
 
 
 namespace Ui {
@@ -16,17 +17,18 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    void writeLineOutput(QString str);
-    QStringListModel* loggingModel() { return &logging_model; }
+    void closeEvent(QCloseEvent *event);
+    //QStringListModel* loggingModel() { return &logging_model; }
 public slots:
-    void log(const QString& msg);
+    void logMessage(const QString& msg);
+    void logLineResponse(bool bResponse);
 signals:
-    void btnForward_clicked();
-    void btnBackward_clicked();
-    void btnLeft_clicked();
-    void btnRight_clicked();
-    void btnStop_clicked();
-    void btnLine_clicked();
+    void sgnForward();
+    void sgnBackward();
+    void sgnLeft();
+    void sgnRight();
+    void sgnStop();
+    void sgnLine();
     void spnboxSpeed_valueChanged(int);
 
 private:
