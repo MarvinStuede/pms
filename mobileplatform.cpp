@@ -71,6 +71,7 @@ void MobilePlatform::stopMotion()
 {
   MotorLeft.stop();
   MotorRight.stop();
+  bFollowing = false;
   emit logMsg("Stopping");
 }
 
@@ -87,37 +88,49 @@ void MobilePlatform::startLineFollowing()
 
 int MobilePlatform::setPWM(int spnbxValue)
 {
-  int nLeft = MotorLeft.setPWM(spnbxValue);
-  int nRight = MotorRight.setPWM(spnbxValue);
+  m_nLastCmdSpeedLeft = MotorLeft.setPWM(spnbxValue);
+  m_nLastCmdSpeedRight = MotorRight.setPWM(spnbxValue);
 
   std::stringstream ssOut;
-  ssOut << "Set PWM: Left Motor: "<< nLeft << ", Right Motor: " << nRight;
+  ssOut << "Set PWM: Left Motor: "<< m_nLastCmdSpeedLeft << ", Right Motor: " << m_nLastCmdSpeedRight;
   emit logMsg(QString::fromStdString(ssOut.str()));
-  return nLeft;
+  return m_nLastCmdSpeedLeft;
 }
 
 void MobilePlatform::followLine()
 {
+  int m_nSpeedLeft;
+  int m_nSpeedRight;
+  float m_fReductionFactor = 0.7;
   while(bFollowing)
   {
     bool bLeftSensorWhite = LineSensorLeft.getStatus();
     bool bRightSensorWhite = LineSensorRight.getStatus();
     if (bLeftSensorWhite && bRightSensorWhite){
-
+        m_nSpeedLeft = m_nLastCmdSpeedLeft;
+        m_nSpeedRight = m_nLastCmdSpeedRight;
     }
     else if (!bLeftSensorWhite && bRightSensorWhite){
-
+        m_nSpeedLeft = m_nLastCmdSpeedLeft *  m_fReductionFactor;
+        m_nSpeedRight = m_nLastCmdSpeedRight;
     }
     else if (bLeftSensorWhite && !bRightSensorWhite){
-
+        m_nSpeedLeft = m_nLastCmdSpeedLeft;
+        m_nSpeedRight = m_nLastCmdSpeedRight * m_fReductionFactor;
     }
     else if (!bLeftSensorWhite && !bRightSensorWhite){
-
+        m_nSpeedLeft = 0;
+        m_nSpeedRight = m_nLastCmdSpeedRight * m_fReductionFactor;
     }
     else{
       emit logMsg("[ERROR]: Line Sensor Output not catched");
+        m_nSpeedLeft = 0;
+        m_nSpeedRight = 0;
     }
-
+    MotorLeft.setPWM(m_nSpeedLeft);
+    MotorRight.setPWM(m_nSpeedRight);
+    MotorLeft.forward();
+    MotorRight.forward();
 
     qApp->processEvents();
   }

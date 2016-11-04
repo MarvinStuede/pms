@@ -34,6 +34,8 @@ private:
     static const int s_nMotorRightPinPWM = 0;
     static const int s_nLineSensorRight  = 27;
     static const int s_nLineSensorLeft   = 28;
+    int m_nLastCmdSpeedRight;
+    int m_nLastCmdSpeedLeft;
     void followLine();
 
     bool bFollowing;

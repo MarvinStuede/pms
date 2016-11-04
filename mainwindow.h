@@ -19,6 +19,7 @@ public:
     ~MainWindow();
     void closeEvent(QCloseEvent *event);
     //QStringListModel* loggingModel() { return &logging_model; }
+
 public slots:
     void logMessage(const QString& msg);
     void logLineResponse(bool bResponse);
