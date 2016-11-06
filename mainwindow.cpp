@@ -6,7 +6,11 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    //Set logging moidel to listOutput and forbid manual edits
     ui->listOutput->setModel(&logging_model);
+    ui->listOutput->setEditTriggers(0);
+
     connect(ui->btnForward,SIGNAL(clicked()),this,SIGNAL(sgnForward()));
     connect(ui->btnBackward,SIGNAL(clicked()),this,SIGNAL(sgnBackward()));
     connect(ui->btnRight,SIGNAL(clicked()),this,SIGNAL(sgnRight()));
@@ -17,18 +21,15 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //Keyboardshortcuts
     QShortcut *scW = new QShortcut(QKeySequence("W"),this);
-    connect(scW,SIGNAL(activated()),this,SIGNAL(sgnForward()));
-
     QShortcut *scA = new QShortcut(QKeySequence("A"),this);
-    connect(scA,SIGNAL(activated()),this,SIGNAL(sgnLeft()));
-
     QShortcut *scS = new QShortcut(QKeySequence("S"),this);
-    connect(scS,SIGNAL(activated()),this,SIGNAL(sgnBackward()));
-
     QShortcut *scD = new QShortcut(QKeySequence("D"),this);
-    connect(scD,SIGNAL(activated()),this,SIGNAL(sgnRight()));
-
     QShortcut *scSpace = new QShortcut(QKeySequence("Space"),this);
+
+    connect(scW,SIGNAL(activated()),this,SIGNAL(sgnForward()));
+    connect(scA,SIGNAL(activated()),this,SIGNAL(sgnLeft()));
+    connect(scS,SIGNAL(activated()),this,SIGNAL(sgnBackward()));
+    connect(scD,SIGNAL(activated()),this,SIGNAL(sgnRight()));
     connect(scSpace,SIGNAL(activated()),this,SIGNAL(sgnStop()));
 
 }

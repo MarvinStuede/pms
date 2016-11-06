@@ -21,36 +21,36 @@ void MobilePlatform::initializeGPIO()
   if(MotorLeft.initPins())
       emit logMsg("Left motor initialized");
   else
-      emit logMsg("Left motor not initialized");
+      emit logMsg("[ERROR]: Left motor not initialized");
 
   if(MotorRight.initPins())
       emit logMsg("Right motor initialized");
   else
-      emit logMsg("Right motor not initialized");
+      emit logMsg("[ERROR]: Right motor not initialized");
 
   if(LineSensorLeft.initPin())
       emit logMsg("Left line sensor initialized");
   else
-      emit logMsg("Left line sensor not initialized");
+      emit logMsg("[ERROR]: Left line sensor not initialized");
 
   if(LineSensorRight.initPin())
       emit logMsg("Right line sensor initialized");
   else
-      emit logMsg("Right line sensor not initialized");
+      emit logMsg("[ERROR]: Right line sensor not initialized");
 }
 
 void MobilePlatform::moveForward()
 {
   MotorLeft.forward();
   MotorRight.forward();
-  emit logMsg("Moving Forward");
+  emit logMsg("Moving forward");
 }
 
 void MobilePlatform::moveBackward()
 {
   MotorLeft.backward();
   MotorRight.backward();
-  emit logMsg("Moving Backward");
+  emit logMsg("Moving backward");
 }
 
 void MobilePlatform::turnLeft()
@@ -76,7 +76,7 @@ void MobilePlatform::stopMotion()
 }
 
 void MobilePlatform::startLineFollowing()
-{
+{//Call Function to start line following, only if it is not started already
   if(!bFollowing)
   {
     bFollowing = true;
@@ -123,7 +123,7 @@ void MobilePlatform::followLine()
         m_nSpeedRight = m_nLastCmdSpeedRight * m_fReductionFactor;
     }
     else{
-      emit logMsg("[ERROR]: Line Sensor Output not catched");
+      emit logMsg("[ERROR]: Line sensor output not catched");
         m_nSpeedLeft = 0;
         m_nSpeedRight = 0;
     }

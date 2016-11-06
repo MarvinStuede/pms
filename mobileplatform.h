@@ -26,6 +26,8 @@ public slots:
     void initializeGPIO();
     int setPWM(int spnbxValue);
 private:
+    void followLine();
+
     static const int s_nMotorLeftPin1    = 10;
     static const int s_nMotorLeftPin2    = 11;
     static const int s_nMotorLeftPinPWM  = 6;
@@ -34,11 +36,11 @@ private:
     static const int s_nMotorRightPinPWM = 0;
     static const int s_nLineSensorRight  = 27;
     static const int s_nLineSensorLeft   = 28;
+
     int m_nLastCmdSpeedRight;
     int m_nLastCmdSpeedLeft;
-    void followLine();
-
     bool bFollowing;
+
     DCMotor MotorLeft;
     DCMotor MotorRight;
     LineSensor LineSensorLeft;
