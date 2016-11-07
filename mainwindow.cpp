@@ -7,7 +7,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    //Set logging moidel to listOutput and forbid manual edits
+    //Set logging model to listOutput and forbid manual edits
     ui->listOutput->setModel(&logging_model);
     ui->listOutput->setEditTriggers(0);
 
@@ -19,7 +19,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->btnLine,SIGNAL(clicked()),this,SIGNAL(sgnLine()));
     connect(ui->spnbxSpeed,SIGNAL(valueChanged(int)),this,SIGNAL(spnboxSpeed_valueChanged(int)));
 
-    //Keyboardshortcuts
+    //Keyboard shortcuts
     QShortcut *scW = new QShortcut(QKeySequence("W"),this);
     QShortcut *scA = new QShortcut(QKeySequence("A"),this);
     QShortcut *scS = new QShortcut(QKeySequence("S"),this);
@@ -42,16 +42,33 @@ MainWindow::~MainWindow()
 
 void MainWindow::logMessage(const QString &msg)
 {//Insert "msg" into list-element, used for logging
+  QString strLastLine = "";
 
-  //Insert new row
-  logging_model.insertRows(logging_model.rowCount(),1);
-  QVariant new_row(msg);
-  logging_model.setData(logging_model.index(logging_model.rowCount()-1),new_row);
+  if(!logging_model.stringList().isEmpty()){
+    strLastLine = logging_model.stringList().back();
+  }
+  if(msg.compare(strLastLine) != 0){
+    //Insert new row
+    logging_model.insertRows(logging_model.rowCount(),1);
+    QVariant new_row(msg);
+    //Set Data of new row
+    QModelIndex vIndex = logging_model.index(logging_model.rowCount()-1);
+    logging_model.setData(vIndex,new_row);
 
-  //Delete first element, if list is longer than 100 elements
-  if(logging_model.rowCount() > 100) logging_model.removeRow(0);
+    //Set vIndex to end to remove Selection bar
+    vIndex = logging_model.index(logging_model.rowCount());
 
-  ui->listOutput->scrollToBottom();
+    //Delete first element, if list is longer than 100 elements
+    if(logging_model.rowCount() > 100) logging_model.removeRow(0);
+
+    ui->listOutput->scrollToBottom();
+    ui->listOutput->setCurrentIndex(vIndex);
+  }
+  else{
+      //If msg equals last entry, set selection to last entry
+      QModelIndex vIndex = logging_model.index(logging_model.rowCount()-1);
+      ui->listOutput->setCurrentIndex(vIndex);
+  }
 }
 
 void MainWindow::logLineResponse(bool bResponse)
