@@ -1,12 +1,12 @@
 #ifndef LINESENSOR_H
 #define LINESENSOR_H
-//#include <wiringPi.h>
+#include <wiringPi.h>
 
 class LineSensor
 {
 public:
   LineSensor(int pinSensor);
-  bool getStatus();
+  bool isOverBlack();
   bool initPin();
 private:
   int m_nPin;

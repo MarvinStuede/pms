@@ -24,6 +24,7 @@ public slots:
     void stopMotion();
     void startLineFollowing();
     void initializeGPIO();
+    void setReductionFactor(double factor);
     int setPWM(int spnbxValue);
 private:
     void followLine();
@@ -40,6 +41,7 @@ private:
     int m_nLastCmdSpeedRight;
     int m_nLastCmdSpeedLeft;
     bool bFollowing;
+    double m_fReductionFactor;
 
     DCMotor MotorLeft;
     DCMotor MotorRight;

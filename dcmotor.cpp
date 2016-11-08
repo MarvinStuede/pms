@@ -5,7 +5,7 @@ DCMotor::DCMotor(int pinMotorA, int pinMotorB, int pinMotorE)
     m_nPinMotorA=pinMotorA;
     m_nPinMotorB=pinMotorB;
     m_nPinMotorE=pinMotorE;
-    m_nPWM=40;
+    m_nPWM=0;
 }
 
 bool DCMotor::initPins()
@@ -15,10 +15,10 @@ bool DCMotor::initPins()
     bool bCondE = m_nPinMotorE <= 29 && !(m_nPinMotorE < 0);
     if(bCondA && bCondB && bCondE)
     {
-       /* pinMode(m_nPinMotorA,OUTPUT);
+        pinMode(m_nPinMotorA,OUTPUT);
         pinMode(m_nPinMotorB,OUTPUT);
         pinMode(m_nPinMotorE,PWM_OUTPUT);
-        softPwmCreate(m_nPinMotorE,nMinPWM,nMaxPWM);*/
+        softPwmCreate(m_nPinMotorE,m_nMinPWM,m_nMaxPWM);
         return true;
     }
     else return false;
@@ -26,21 +26,21 @@ bool DCMotor::initPins()
 
 void DCMotor::forward()
 {
-    /*digitalWrite(m_nPinMotorA,0);
+    digitalWrite(m_nPinMotorA,0);
     digitalWrite(m_nPinMotorB,1);
-    softPwmWrite(m_nPinMotorE,m_pwm);*/
+    softPwmWrite(m_nPinMotorE,m_nPWM);
 }
 
 void DCMotor::backward()
 {
-   /* digitalWrite(m_nPinMotorA,1);
+    digitalWrite(m_nPinMotorA,1);
     digitalWrite(m_nPinMotorB,0);
-    softPwmWrite(m_nPinMotorE,m_pwm);*/
+    softPwmWrite(m_nPinMotorE,m_nPWM);
 }
 
 void DCMotor::stop()
 {
-   // softPwmWrite(m_nPinMotorE,0);
+    softPwmWrite(m_nPinMotorE,0);
 }
 
 int DCMotor::setPWM(const int nPWM)

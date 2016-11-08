@@ -1,7 +1,7 @@
 #ifndef DCMOTOR_H
 #define DCMOTOR_H
-//#include <wiringPi.h>
-//#include <softPwm.h>
+#include <wiringPi.h>
+#include <softPwm.h>
 
 class DCMotor
 {

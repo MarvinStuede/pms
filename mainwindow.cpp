@@ -6,8 +6,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    this->show();
 
-    //Set logging moidel to listOutput and forbid manual edits
+    //Set logging model to listOutput and forbid manual edits
     ui->listOutput->setModel(&logging_model);
     ui->listOutput->setEditTriggers(0);
 
@@ -15,22 +16,23 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->btnBackward,SIGNAL(clicked()),this,SIGNAL(sgnBackward()));
     connect(ui->btnRight,SIGNAL(clicked()),this,SIGNAL(sgnRight()));
     connect(ui->btnLeft,SIGNAL(clicked()),this,SIGNAL(sgnLeft()));
-    connect(ui->btnStop,SIGNAL(clicked()),this,SIGNAL(sgnStop()));
-    connect(ui->btnLine,SIGNAL(clicked()),this,SIGNAL(sgnLine()));
-    connect(ui->spnbxSpeed,SIGNAL(valueChanged(int)),this,SIGNAL(spnboxSpeed_valueChanged(int)));
+    connect(ui->btnStop,SIGNAL(clicked()),this,SLOT(sgnStopCallback()));
+    connect(ui->btnLine,SIGNAL(clicked()),this,SLOT(sgnLineCallback()));
+    //connect(ui->spnbxSpeed,SIGNAL(valueChanged(int)),this,SIGNAL(spnboxSpeed_valueChanged(int)));
+    connect(ui->spnbxReduction,SIGNAL(valueChanged(double)),this,SIGNAL(spnboxReduction_valueChanged(double)));
 
-    //Keyboardshortcuts
+    //Keyboard shortcuts
     QShortcut *scW = new QShortcut(QKeySequence("W"),this);
     QShortcut *scA = new QShortcut(QKeySequence("A"),this);
     QShortcut *scS = new QShortcut(QKeySequence("S"),this);
     QShortcut *scD = new QShortcut(QKeySequence("D"),this);
     QShortcut *scSpace = new QShortcut(QKeySequence("Space"),this);
 
-    connect(scW,SIGNAL(activated()),this,SIGNAL(sgnForward()));
-    connect(scA,SIGNAL(activated()),this,SIGNAL(sgnLeft()));
-    connect(scS,SIGNAL(activated()),this,SIGNAL(sgnBackward()));
-    connect(scD,SIGNAL(activated()),this,SIGNAL(sgnRight()));
-    connect(scSpace,SIGNAL(activated()),this,SIGNAL(sgnStop()));
+    connect(scW,SIGNAL(activated()),ui->btnForward,SIGNAL(clicked()));
+    connect(scA,SIGNAL(activated()),ui->btnLeft,SIGNAL(clicked()));
+    connect(scS,SIGNAL(activated()),ui->btnBackward,SIGNAL(clicked()));
+    connect(scD,SIGNAL(activated()),ui->btnRight,SIGNAL(clicked()));
+    connect(scSpace,SIGNAL(activated()),this,SLOT(sgnStopCallback()));
 
 }
 
@@ -42,16 +44,33 @@ MainWindow::~MainWindow()
 
 void MainWindow::logMessage(const QString &msg)
 {//Insert "msg" into list-element, used for logging
+  QString strLastLine = "";
 
-  //Insert new row
-  logging_model.insertRows(logging_model.rowCount(),1);
-  QVariant new_row(msg);
-  logging_model.setData(logging_model.index(logging_model.rowCount()-1),new_row);
+  if(!logging_model.stringList().isEmpty()){
+    strLastLine = logging_model.stringList().back();
+  }
+  if(msg.compare(strLastLine) != 0){
+    //Insert new row
+    logging_model.insertRows(logging_model.rowCount(),1);
+    QVariant new_row(msg);
+    //Set Data of new row
+    QModelIndex vIndex = logging_model.index(logging_model.rowCount()-1);
+    logging_model.setData(vIndex,new_row);
 
-  //Delete first element, if list is longer than 100 elements
-  if(logging_model.rowCount() > 100) logging_model.removeRow(0);
+    //Set vIndex to end to remove selection bar
+    vIndex = logging_model.index(logging_model.rowCount());
 
-  ui->listOutput->scrollToBottom();
+    //Delete first element, if list is longer than 100 elements
+    if(logging_model.rowCount() > 100) logging_model.removeRow(0);
+
+    ui->listOutput->scrollToBottom();
+    ui->listOutput->setCurrentIndex(vIndex);
+  }
+  else{
+      //Set selection to last entry
+     // QModelIndex vIndex = logging_model.index(logging_model.rowCount()-1);
+   //   ui->listOutput->setCurrentIndex(vIndex);
+  }
 }
 
 void MainWindow::logLineResponse(bool bResponse)
@@ -59,7 +78,54 @@ void MainWindow::logLineResponse(bool bResponse)
   if(bResponse) logMessage("Line following started");
   else logMessage("Line following already started");
 }
+
+void MainWindow::sgnStopCallback()
+{
+
+    ui->btnBackward->setEnabled(true);
+    ui->btnForward->setEnabled(true);
+    ui->btnLeft->setEnabled(true);
+    ui->btnRight->setEnabled(true);
+    ui->btnLine->setEnabled(true);
+
+    ui->btnBackward->blockSignals(false);
+    ui->btnForward->blockSignals(false);
+    ui->btnLeft->blockSignals(false);
+    ui->btnRight->blockSignals(false);
+    ui->btnLine->blockSignals(false);
+
+    emit sgnStop();
+}
+
+void MainWindow::sgnLineCallback()
+{
+
+    ui->btnBackward->setEnabled(false);
+    ui->btnForward->setEnabled(false);
+    ui->btnLeft->setEnabled(false);
+    ui->btnRight->setEnabled(false);
+    ui->btnLine->setEnabled(false);
+
+    ui->btnBackward->blockSignals(true);
+    ui->btnForward->blockSignals(true);
+    ui->btnLeft->blockSignals(true);
+    ui->btnRight->blockSignals(true);
+    ui->btnLine->blockSignals(true);
+
+    ui->btnStop->setFocus();
+    emit sgnLine();
+}
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-  emit sgnStop();
+    emit sgnStop();
+}
+
+void MainWindow::emitStandardValues()
+{
+    emit spnboxSpeed_valueChanged(ui->spnbxSpeed->value());
+}
+
+void MainWindow::on_spnbxSpeed_editingFinished()
+{
+    emit spnboxSpeed_valueChanged(ui->spnbxSpeed->value());
 }

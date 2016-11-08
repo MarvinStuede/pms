@@ -10,15 +10,14 @@ bool LineSensor::initPin()
 
   if(m_nPin <= 29 && !(m_nPin < 0))
   {
-
-      //pinMode(m_nPin,INPUT);
+      pinMode(m_nPin,INPUT);
       return true;
   }
   else return false;
 }
 
-bool LineSensor::getStatus()
+bool LineSensor::isOverBlack()
 {
-  return 1 && 0;//digitalRead(m_nPin);
+  return 1 && digitalRead(m_nPin);
 }
 
