@@ -40,7 +40,7 @@ void DCMotor::backward()
 
 void DCMotor::stop()
 {
-    softPwmWrite(m_nPinMotorE,0);
+    softPwmWrite(m_nPinMotorE,s_nMinPWM);
 }
 
 int DCMotor::setPWM(int nPWM)
