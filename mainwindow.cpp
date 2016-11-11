@@ -18,9 +18,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->btnLeft,SIGNAL(clicked()),this,SIGNAL(sgnLeft()));
     connect(ui->btnStop,SIGNAL(clicked()),this,SLOT(on_sgnStop()));
     connect(ui->btnLine,SIGNAL(clicked()),this,SLOT(on_sgnLine()));
-    connect(ui->spnbxSpeed,SIGNAL(editingFinished()),this,SIGNAL(sgnSpeedValueChanged(ui->spnbxSpeed->value()));
-    connect(ui->spnbxReduction,SIGNAL(editingFinished()),this,SIGNAL(sgnReductionValueChanged(ui->spnbxReduction->value()));
-    //connect(ui->spnbxReduction,SIGNAL(valueChanged(double)),this,SIGNAL(sgnReductionValueChanged(double)));
+    connect(ui->spnbxSpeed,SIGNAL(editingFinished()),this,SLOT(on_sgnSpeedValueChanged()));
+    connect(ui->spnbxReduction,SIGNAL(editingFinished()),this,SLOT(on_sgnReductionValueChanged());
 
     //Keyboard shortcuts
     QShortcut *scW = new QShortcut(QKeySequence("W"),this);
@@ -87,6 +86,12 @@ void MainWindow::logLineResponse(bool bResponse)
   else logMessage("Line following already started");
 }
 
+void MainWindow::emitStandardValues()
+{
+    emit sgnSpeedValueChanged(ui->spnbxSpeed->value());
+    emit sgnReductionValueChanged(ui->spnbxReduction->value());
+}
+
 void MainWindow::on_sgnStop()
 {
 
@@ -123,13 +128,18 @@ void MainWindow::on_sgnLine()
     ui->btnStop->setFocus();
     emit sgnLine();
 }
+
+void MainWindow::on_sgnReductionValueChanged()
+{
+    emit sgnReductionValueChanged(ui->spnbxReduction->value());
+}
+
+void MainWindow::on_sgnSpeedValueChanged()
+{
+    emit sgnSpeedValueChanged(ui->spnbxSpeed->value());
+}
+
 void MainWindow::closeEvent(QCloseEvent *event)
 {
     emit sgnStop();
-}
-
-void MainWindow::emitStandardValues()
-{
-    emit sgnSpeedValueChanged(ui->spnbxSpeed->value());
-    emit sgnReductionValueChanged(ui->spnbxReduction->value());
 }

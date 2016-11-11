@@ -1,8 +1,8 @@
 #include "linesensor.h"
 
-LineSensor::LineSensor(int pinSensor)
+LineSensor::LineSensor(int nPinSensor)
 {
-  m_nPin = pinSensor;
+  m_nPin = nPinSensor;
 }
 
 bool LineSensor::initPin()

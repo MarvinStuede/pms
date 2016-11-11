@@ -41,6 +41,8 @@ private:
 private slots:
      void on_sgnStop();
      void on_sgnLine();
+     void on_sgnReductionValueChanged();
+     void on_sgnSpeedValueChanged();
 };
 
 #endif // MAINWINDOW_H
