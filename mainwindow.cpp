@@ -47,19 +47,14 @@ void MainWindow::logMessage(const QString &msg)
 {//Insert "msg" into list-element, used for logging
   QString strLastLine = "";
 
-<<<<<<< HEAD
+  //Get String of last entry
   if(!logging_model.stringList().isEmpty())
   {
     strLastLine = logging_model.stringList().back();
   }
+
   if(msg.compare(strLastLine) != 0)
   {
-=======
-  if(!logging_model.stringList().isEmpty()){
-    strLastLine = logging_model.stringList().back();
-  }
-  if(msg.compare(strLastLine) != 0){
->>>>>>> ed6f098ea6d2b17c8bfe700a1a8ce2ac1aea6a86
     //Insert new row
     logging_model.insertRows(logging_model.rowCount(),1);
     QVariant new_row(msg);
@@ -67,11 +62,7 @@ void MainWindow::logMessage(const QString &msg)
     QModelIndex vIndex = logging_model.index(logging_model.rowCount()-1);
     logging_model.setData(vIndex,new_row);
 
-<<<<<<< HEAD
     //Set vIndex to end to remove selection bar
-=======
-    //Set vIndex to end to remove Selection bar
->>>>>>> ed6f098ea6d2b17c8bfe700a1a8ce2ac1aea6a86
     vIndex = logging_model.index(logging_model.rowCount());
 
     //Delete first element, if list is longer than 100 elements
@@ -80,18 +71,13 @@ void MainWindow::logMessage(const QString &msg)
     ui->listOutput->scrollToBottom();
     ui->listOutput->setCurrentIndex(vIndex);
   }
-<<<<<<< HEAD
+
   else
   {
       //Set selection to last entry
      // QModelIndex vIndex = logging_model.index(logging_model.rowCount()-1);
    //   ui->listOutput->setCurrentIndex(vIndex);
-=======
-  else{
-      //If msg equals last entry, set selection to last entry
-      QModelIndex vIndex = logging_model.index(logging_model.rowCount()-1);
-      ui->listOutput->setCurrentIndex(vIndex);
->>>>>>> ed6f098ea6d2b17c8bfe700a1a8ce2ac1aea6a86
+
   }
 }
 
