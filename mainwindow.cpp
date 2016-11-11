@@ -16,10 +16,10 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->btnBackward,SIGNAL(clicked()),this,SIGNAL(sgnBackward()));
     connect(ui->btnRight,SIGNAL(clicked()),this,SIGNAL(sgnRight()));
     connect(ui->btnLeft,SIGNAL(clicked()),this,SIGNAL(sgnLeft()));
-    connect(ui->btnStop,SIGNAL(clicked()),this,SLOT(on_sgnStop()));
-    connect(ui->btnLine,SIGNAL(clicked()),this,SLOT(on_sgnLine()));
-    connect(ui->spnbxSpeed,SIGNAL(editingFinished()),this,SLOT(on_sgnSpeedValueChanged()));
-    connect(ui->spnbxReduction,SIGNAL(editingFinished()),this,SLOT(on_sgnReductionValueChanged());
+    connect(ui->btnStop,SIGNAL(clicked()),this,SLOT(at_sgnStop()));
+    connect(ui->btnLine,SIGNAL(clicked()),this,SLOT(at_sgnLine()));
+    connect(ui->spnbxSpeed,SIGNAL(editingFinished()),this,SLOT(at_sgnSpeedValueChanged()));
+    connect(ui->spnbxReduction,SIGNAL(editingFinished()),this,SLOT(at_sgnReductionValueChanged()));
 
     //Keyboard shortcuts
     QShortcut *scW = new QShortcut(QKeySequence("W"),this);
@@ -32,7 +32,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(scA,SIGNAL(activated()),ui->btnLeft,SIGNAL(clicked()));
     connect(scS,SIGNAL(activated()),ui->btnBackward,SIGNAL(clicked()));
     connect(scD,SIGNAL(activated()),ui->btnRight,SIGNAL(clicked()));
-    connect(scSpace,SIGNAL(activated()),this,SLOT(on_sgnStop()));
+    connect(scSpace,SIGNAL(activated()),this,SLOT(at_sgnStop()));
 
 }
 
@@ -92,7 +92,7 @@ void MainWindow::emitStandardValues()
     emit sgnReductionValueChanged(ui->spnbxReduction->value());
 }
 
-void MainWindow::on_sgnStop()
+void MainWindow::at_sgnStop()
 {
 
     ui->btnBackward->setEnabled(true);
@@ -110,7 +110,7 @@ void MainWindow::on_sgnStop()
     emit sgnStop();
 }
 
-void MainWindow::on_sgnLine()
+void MainWindow::at_sgnLine()
 {
 
     ui->btnBackward->setEnabled(false);
@@ -129,17 +129,17 @@ void MainWindow::on_sgnLine()
     emit sgnLine();
 }
 
-void MainWindow::on_sgnReductionValueChanged()
+void MainWindow::at_sgnReductionValueChanged()
 {
     emit sgnReductionValueChanged(ui->spnbxReduction->value());
 }
 
-void MainWindow::on_sgnSpeedValueChanged()
+void MainWindow::at_sgnSpeedValueChanged()
 {
     emit sgnSpeedValueChanged(ui->spnbxSpeed->value());
 }
 
-void MainWindow::closeEvent(QCloseEvent *event)
+void MainWindow::closeEvent(QCloseEvent */*unused*/)
 {
     emit sgnStop();
 }

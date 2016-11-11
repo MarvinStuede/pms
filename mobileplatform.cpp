@@ -46,7 +46,7 @@ void MobilePlatform::initializeGPIO()
 
 void MobilePlatform::setReductionFactor(double dbFactor)
 {
-    m_fReductionFactor = factor;
+    m_fReductionFactor = dbFactor;
     std::stringstream ssOut;
     ssOut << "Reduce speed of slower motor for line following to "<< m_fReductionFactor * 100 << "%";
     emit sgnLogMsg(QString::fromStdString(ssOut.str()));

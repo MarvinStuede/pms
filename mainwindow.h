@@ -17,7 +17,7 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    void closeEvent(QCloseEvent *event);
+    void closeEvent(QCloseEvent */*unused*/);
     void emitStandardValues();
 
 public slots:
@@ -39,10 +39,10 @@ private:
      QStringListModel logging_model;
 
 private slots:
-     void on_sgnStop();
-     void on_sgnLine();
-     void on_sgnReductionValueChanged();
-     void on_sgnSpeedValueChanged();
+     void at_sgnStop();
+     void at_sgnLine();
+     void at_sgnReductionValueChanged();
+     void at_sgnSpeedValueChanged();
 };
 
 #endif // MAINWINDOW_H

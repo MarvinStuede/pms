@@ -7,8 +7,8 @@
 QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
-#INCLUDEPATH +=../wiringPI/wiringPI
-#LIBS   += -L../wiringPI/wiringPI -lwiringPi
+INCLUDEPATH +=../wiringPI/wiringPI
+LIBS   += -L../wiringPI/wiringPI -lwiringPi
 TARGET = PMS_GUI_Ubuntu
 TEMPLATE = app
 DESTDIR = ./bin
