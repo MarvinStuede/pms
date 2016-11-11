@@ -13,9 +13,11 @@ class MobilePlatform : public QObject
     Q_OBJECT
 public:
     explicit MobilePlatform(QObject *parent = 0);
+
 signals:
-    void logMsg(const QString& msg);
-    void followingTriggered(bool bTriggered);
+    void sgnLogMsg(const QString& msg);
+    void sgnFollowing(bool bTriggered);
+
 public slots:
     void moveForward();
     void moveBackward();
@@ -24,9 +26,11 @@ public slots:
     void stopMotion();
     void startLineFollowing();
     void initializeGPIO();
-    void setReductionFactor(double factor);
-    int setPWM(int spnbxValue);
+    void setReductionFactor(double dbFactor);
+    void setPWM(int spnbxValue);
+
 private:
+
     void followLine();
 
     static const int s_nMotorLeftPin1    = 10;
@@ -40,13 +44,13 @@ private:
 
     int m_nLastCmdSpeedRight;
     int m_nLastCmdSpeedLeft;
-    bool bFollowing;
+    bool m_bFollowing;
     double m_fReductionFactor;
 
-    DCMotor MotorLeft;
-    DCMotor MotorRight;
-    LineSensor LineSensorLeft;
-    LineSensor LineSensorRight;
+    DCMotor m_MotorLeft;
+    DCMotor m_MotorRight;
+    LineSensor m_LineSensorLeft;
+    LineSensor m_LineSensorRight;
 };
 
 #endif // MOBILEPLATFORM_H

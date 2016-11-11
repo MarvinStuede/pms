@@ -16,10 +16,11 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->btnBackward,SIGNAL(clicked()),this,SIGNAL(sgnBackward()));
     connect(ui->btnRight,SIGNAL(clicked()),this,SIGNAL(sgnRight()));
     connect(ui->btnLeft,SIGNAL(clicked()),this,SIGNAL(sgnLeft()));
-    connect(ui->btnStop,SIGNAL(clicked()),this,SLOT(sgnStopCallback()));
-    connect(ui->btnLine,SIGNAL(clicked()),this,SLOT(sgnLineCallback()));
-    //connect(ui->spnbxSpeed,SIGNAL(valueChanged(int)),this,SIGNAL(spnboxSpeed_valueChanged(int)));
-    connect(ui->spnbxReduction,SIGNAL(valueChanged(double)),this,SIGNAL(spnboxReduction_valueChanged(double)));
+    connect(ui->btnStop,SIGNAL(clicked()),this,SLOT(on_sgnStop()));
+    connect(ui->btnLine,SIGNAL(clicked()),this,SLOT(on_sgnLine()));
+    connect(ui->spnbxSpeed,SIGNAL(editingFinished()),this,SIGNAL(sgnSpeedValueChanged(ui->spnbxSpeed->value()));
+    connect(ui->spnbxReduction,SIGNAL(editingFinished()),this,SIGNAL(sgnReductionValueChanged(ui->spnbxReduction->value()));
+    //connect(ui->spnbxReduction,SIGNAL(valueChanged(double)),this,SIGNAL(sgnReductionValueChanged(double)));
 
     //Keyboard shortcuts
     QShortcut *scW = new QShortcut(QKeySequence("W"),this);
@@ -32,7 +33,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(scA,SIGNAL(activated()),ui->btnLeft,SIGNAL(clicked()));
     connect(scS,SIGNAL(activated()),ui->btnBackward,SIGNAL(clicked()));
     connect(scD,SIGNAL(activated()),ui->btnRight,SIGNAL(clicked()));
-    connect(scSpace,SIGNAL(activated()),this,SLOT(sgnStopCallback()));
+    connect(scSpace,SIGNAL(activated()),this,SLOT(on_sgnStop()));
 
 }
 
@@ -46,10 +47,12 @@ void MainWindow::logMessage(const QString &msg)
 {//Insert "msg" into list-element, used for logging
   QString strLastLine = "";
 
-  if(!logging_model.stringList().isEmpty()){
+  if(!logging_model.stringList().isEmpty())
+  {
     strLastLine = logging_model.stringList().back();
   }
-  if(msg.compare(strLastLine) != 0){
+  if(msg.compare(strLastLine) != 0)
+  {
     //Insert new row
     logging_model.insertRows(logging_model.rowCount(),1);
     QVariant new_row(msg);
@@ -66,7 +69,8 @@ void MainWindow::logMessage(const QString &msg)
     ui->listOutput->scrollToBottom();
     ui->listOutput->setCurrentIndex(vIndex);
   }
-  else{
+  else
+  {
       //Set selection to last entry
      // QModelIndex vIndex = logging_model.index(logging_model.rowCount()-1);
    //   ui->listOutput->setCurrentIndex(vIndex);
@@ -79,7 +83,7 @@ void MainWindow::logLineResponse(bool bResponse)
   else logMessage("Line following already started");
 }
 
-void MainWindow::sgnStopCallback()
+void MainWindow::on_sgnStop()
 {
 
     ui->btnBackward->setEnabled(true);
@@ -97,7 +101,7 @@ void MainWindow::sgnStopCallback()
     emit sgnStop();
 }
 
-void MainWindow::sgnLineCallback()
+void MainWindow::on_sgnLine()
 {
 
     ui->btnBackward->setEnabled(false);
@@ -122,10 +126,6 @@ void MainWindow::closeEvent(QCloseEvent *event)
 
 void MainWindow::emitStandardValues()
 {
-    emit spnboxSpeed_valueChanged(ui->spnbxSpeed->value());
-}
-
-void MainWindow::on_spnbxSpeed_editingFinished()
-{
-    emit spnboxSpeed_valueChanged(ui->spnbxSpeed->value());
+    emit sgnSpeedValueChanged(ui->spnbxSpeed->value());
+    emit sgnReductionValueChanged(ui->spnbxReduction->value());
 }

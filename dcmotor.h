@@ -6,12 +6,12 @@
 class DCMotor
 {
 public:
-  DCMotor(int pinMotorA, int pinMotorB, int pinMotorE);
+  DCMotor(int nPinMotorA, int nPinMotorB, int nPinMotorE);
   bool initPins();
   void forward();
   void backward();
   void stop();
-  int setPWM(const int pwm);
+  int setPWM(int nPWM);
   int getPWM();
 
 private:
@@ -19,8 +19,8 @@ private:
   int m_nPinMotorB;
   int m_nPinMotorE;
   int m_nPWM;
-  static const int m_nMaxPWM = 255;
-  static const int m_nMinPWM = 0;
+  static const int s_nMaxPWM = 255;
+  static const int s_nMinPWM = 0;
 };
 
 #endif // DCMOTOR_H

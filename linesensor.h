@@ -4,10 +4,12 @@
 
 class LineSensor
 {
+
 public:
-  LineSensor(int pinSensor);
+  LineSensor(int nPinSensor);
   bool isOverBlack();
   bool initPin();
+
 private:
   int m_nPin;
 };

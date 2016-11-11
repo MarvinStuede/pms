@@ -11,11 +11,10 @@ class ControlSystem : public QObject
 public:
     explicit ControlSystem(QObject *parent = 0);
     ~ControlSystem();
+
 private:
    MobilePlatform *m_pMobilePlatform;
    MainWindow *m_pMainWindow;
-
-public slots:
 
 };
 

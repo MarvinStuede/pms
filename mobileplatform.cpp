@@ -2,12 +2,12 @@
 
 MobilePlatform::MobilePlatform(QObject *parent) :
     QObject(parent)
-  ,MotorLeft(s_nMotorLeftPin1,s_nMotorLeftPin2,s_nMotorLeftPinPWM)
-  ,MotorRight(s_nMotorRightPin1,s_nMotorRightPin2,s_nMotorRightPinPWM)
-  ,LineSensorLeft(s_nLineSensorLeft)
-  ,LineSensorRight(s_nLineSensorRight)
+  ,m_MotorLeft(s_nMotorLeftPin1,s_nMotorLeftPin2,s_nMotorLeftPinPWM)
+  ,m_MotorRight(s_nMotorRightPin1,s_nMotorRightPin2,s_nMotorRightPinPWM)
+  ,m_LineSensorLeft(s_nLineSensorLeft)
+  ,m_LineSensorRight(s_nLineSensorRight)
 {
-  bFollowing = false;
+  m_bFollowing = false;
   m_nLastCmdSpeedLeft = 40;
   m_nLastCmdSpeedRight = 40;
   m_fReductionFactor = 0.3;
@@ -16,140 +16,152 @@ MobilePlatform::MobilePlatform(QObject *parent) :
 void MobilePlatform::initializeGPIO()
 {
 
-  if(wiringPiSetup() == -1){
-      emit logMsg("GPIO Pin Setup failed");
-      emit logMsg("Motors and Sensors not initialized");
+  if(wiringPiSetup() == -1)
+  {
+      emit sgnLogMsg("GPIO Pin Setup failed");
+      emit sgnLogMsg("Motors and Sensors not initialized");
       return;
   }
 
-  if(MotorLeft.initPins())
-      emit logMsg("Left motor initialized");
+  if(m_MotorLeft.initPins())
+      emit sgnLogMsg("Left motor initialized");
   else
-      emit logMsg("[ERROR]: Left motor not initialized");
+      emit sgnLogMsg("[ERROR]: Left motor not initialized");
 
-  if(MotorRight.initPins())
-      emit logMsg("Right motor initialized");
+  if(m_MotorRight.initPins())
+      emit sgnLogMsg("Right motor initialized");
   else
-      emit logMsg("[ERROR]: Right motor not initialized");
+      emit sgnLogMsg("[ERROR]: Right motor not initialized");
 
-  if(LineSensorLeft.initPin())
-      emit logMsg("Left line sensor initialized");
+  if(m_LineSensorLeft.initPin())
+      emit sgnLogMsg("Left line sensor initialized");
   else
-      emit logMsg("[ERROR]: Left line sensor not initialized");
+      emit sgnLogMsg("[ERROR]: Left line sensor not initialized");
 
-  if(LineSensorRight.initPin())
-      emit logMsg("Right line sensor initialized");
+  if(m_LineSensorRight.initPin())
+      emit sgnLogMsg("Right line sensor initialized");
   else
-      emit logMsg("[ERROR]: Right line sensor not initialized");
+      emit sgnLogMsg("[ERROR]: Right line sensor not initialized");
 }
 
-void MobilePlatform::setReductionFactor(double factor)
+void MobilePlatform::setReductionFactor(double dbFactor)
 {
     m_fReductionFactor = factor;
     std::stringstream ssOut;
-    ssOut << "Reduction factor set to: "<< m_fReductionFactor;
-    emit logMsg(QString::fromStdString(ssOut.str()));
+    ssOut << "Reduce speed of slower motor for line following to "<< m_fReductionFactor * 100 << "%";
+    emit sgnLogMsg(QString::fromStdString(ssOut.str()));
 }
 
 void MobilePlatform::moveForward()
 {
-  MotorLeft.forward();
-  MotorRight.forward();
-  emit logMsg("Moving forward");
+  m_MotorLeft.forward();
+  m_MotorRight.forward();
+  emit sgnLogMsg("Move Command: forward");
 }
 
 void MobilePlatform::moveBackward()
 {
-  MotorLeft.backward();
-  MotorRight.backward();
-  emit logMsg("Moving backward");
+  m_MotorLeft.backward();
+  m_MotorRight.backward();
+  emit sgnLogMsg("Move Command: backward");
 }
 
 void MobilePlatform::turnLeft()
 {
-  MotorLeft.stop();
-  MotorRight.forward();
-  emit logMsg("Turning left");
+  m_MotorLeft.stop();
+  m_MotorRight.forward();
+  emit sgnLogMsg("Move Command: left");
 }
 
 void MobilePlatform::turnRight()
 {
-  MotorLeft.forward();
-  MotorRight.stop();
-  emit logMsg("Turning right");
+  m_MotorLeft.forward();
+  m_MotorRight.stop();
+  emit sgnLogMsg("Move Command: right");
 }
 
 void MobilePlatform::stopMotion()
 {
-  MotorLeft.stop();
-  MotorRight.stop();
-  bFollowing = false;
-  emit logMsg("Stopping");
+  m_MotorLeft.stop();
+  m_MotorRight.stop();
+  m_bFollowing = false;
+  emit sgnLogMsg("Move Command: Stop");
 }
 
 void MobilePlatform::startLineFollowing()
 {//Call Function to start line following, only if it is not started already
-  if(!bFollowing)
+  if(!m_bFollowing)
   {
-    bFollowing = true;
-    emit followingTriggered(true);
+    m_bFollowing = true;
+    emit sgnFollowing(true);
     followLine();
   }
-  else emit followingTriggered(false);
+  else emit sgnFollowing(false);
 }
 
-int MobilePlatform::setPWM(int spnbxValue)
+void MobilePlatform::setPWM(int nSpnbxValue)
 {
-  m_nLastCmdSpeedLeft = MotorLeft.setPWM(spnbxValue);
-  m_nLastCmdSpeedRight = MotorRight.setPWM(spnbxValue * 0.9);//Reduce speed of right motor to have straight movement
+  m_nLastCmdSpeedLeft = m_MotorLeft.setPWM(nSpnbxValue);
+  m_nLastCmdSpeedRight = m_MotorRight.setPWM(nSpnbxValue);
 
   std::stringstream ssOut;
   ssOut << "Set PWM: Left Motor: "<< m_nLastCmdSpeedLeft << ", Right Motor: " << m_nLastCmdSpeedRight;
-  emit logMsg(QString::fromStdString(ssOut.str()));
-  return m_nLastCmdSpeedLeft;
+  emit sgnLogMsg(QString::fromStdString(ssOut.str()));
 }
 
 void MobilePlatform::followLine()
 {
-  int m_nSpeedLeft;
-  int m_nSpeedRight;
+  int nSpeedLeft;
+  int nSpeedRight;
+  int nOldCase = 0;
 
-  while(bFollowing)
+  while(m_bFollowing)
   {
-    bool bLeftSensorOnLine = LineSensorLeft.isOverBlack();
-    bool bRightSensorOnLine = LineSensorRight.isOverBlack();
-    if (!bLeftSensorOnLine && bRightSensorOnLine){
-        m_nSpeedLeft = m_nLastCmdSpeedLeft;
-        m_nSpeedRight = m_nLastCmdSpeedRight;
-        emit logMsg("Going straight!");
+    bool bLeftSensorOnLine = m_LineSensorLeft.isOverBlack();
+    bool bRightSensorOnLine = m_LineSensorRight.isOverBlack();
+
+    if (!bLeftSensorOnLine && bRightSensorOnLine)
+    {
+        nSpeedLeft = m_nLastCmdSpeedLeft;
+        nSpeedRight = m_nLastCmdSpeedRight;
+
+        if(nOldCase != 1)
+            emit sgnLogMsg("Line follower: Going straight");
+        nOldCase = 1;
     }
-    else if (bLeftSensorOnLine && bRightSensorOnLine){
-        m_nSpeedLeft = m_nLastCmdSpeedLeft *  m_fReductionFactor;
-        m_nSpeedRight = m_nLastCmdSpeedRight;
-        emit logMsg("Going left!");
+    else if (bLeftSensorOnLine)
+    {
+        nSpeedLeft = m_nLastCmdSpeedLeft *  m_fReductionFactor;
+        nSpeedRight = m_nLastCmdSpeedRight;
+
+        if(nOldCase != 2)
+            emit sgnLogMsg("Line follower: Going left");
+        nOldCase = 2;
     }
-    else if (bLeftSensorOnLine && !bRightSensorOnLine){
-        m_nSpeedLeft = m_nLastCmdSpeedLeft *  m_fReductionFactor;
-        m_nSpeedRight = m_nLastCmdSpeedRight;
-        emit logMsg("Going left!");
+    else if (!bRightSensorOnLine)
+    {
+        nSpeedLeft = m_nLastCmdSpeedLeft;
+        nSpeedRight = m_nLastCmdSpeedRight *  m_fReductionFactor;
+
+        if(nOldCase != 3)
+            emit sgnLogMsg("Line follower: Going right");
+        nOldCase = 3;
     }
-    else if (!bLeftSensorOnLine && !bRightSensorOnLine){
-        m_nSpeedLeft = m_nLastCmdSpeedLeft;
-        m_nSpeedRight = m_nLastCmdSpeedRight *  m_fReductionFactor;
-        emit logMsg("Going right!");
+    else
+    {
+        nSpeedLeft = 0;
+        nSpeedRight = 0;
+        emit sgnLogMsg("[ERROR]: Line sensor output not catched");
     }
-    else{
-      emit logMsg("[ERROR]: Line sensor output not catched");
-        m_nSpeedLeft = 0;
-        m_nSpeedRight = 0;
-    }
-    MotorLeft.setPWM(m_nSpeedLeft);
-    MotorRight.setPWM(m_nSpeedRight);
-    MotorLeft.forward();
-    MotorRight.forward();
+
+    m_MotorLeft.setPWM(nSpeedLeft);
+    m_MotorRight.setPWM(nSpeedRight);
+    m_MotorLeft.forward();
+    m_MotorRight.forward();
 
     qApp->processEvents();
   }
-  MotorLeft.setPWM(m_nLastCmdSpeedLeft);
-  MotorRight.setPWM(m_nLastCmdSpeedRight);
+
+  m_MotorLeft.setPWM(m_nLastCmdSpeedLeft);
+  m_MotorRight.setPWM(m_nLastCmdSpeedRight);
 }

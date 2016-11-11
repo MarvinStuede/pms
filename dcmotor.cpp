@@ -1,11 +1,11 @@
 #include "dcmotor.h"
 
-DCMotor::DCMotor(int pinMotorA, int pinMotorB, int pinMotorE)
+DCMotor::DCMotor(int nPinMotorA, int nPinMotorB, int nPinMotorE)
 {
-    m_nPinMotorA=pinMotorA;
-    m_nPinMotorB=pinMotorB;
-    m_nPinMotorE=pinMotorE;
-    m_nPWM=0;
+    m_nPinMotorA=nPinMotorA;
+    m_nPinMotorB=nPinMotorB;
+    m_nPinMotorE=nPinMotorE;
+    m_nPWM = 0;
 }
 
 bool DCMotor::initPins()
@@ -18,7 +18,7 @@ bool DCMotor::initPins()
         pinMode(m_nPinMotorA,OUTPUT);
         pinMode(m_nPinMotorB,OUTPUT);
         pinMode(m_nPinMotorE,PWM_OUTPUT);
-        softPwmCreate(m_nPinMotorE,m_nMinPWM,m_nMaxPWM);
+        softPwmCreate(m_nPinMotorE,s_nMinPWM,s_nMaxPWM);
         return true;
     }
     else return false;
@@ -43,12 +43,12 @@ void DCMotor::stop()
     softPwmWrite(m_nPinMotorE,0);
 }
 
-int DCMotor::setPWM(const int nPWM)
+int DCMotor::setPWM(int nPWM)
 {
-  if(nPWM < m_nMinPWM)
-    m_nPWM = m_nMinPWM;
-  else if(nPWM > m_nMaxPWM)
-    m_nPWM = m_nMaxPWM;
+  if(nPWM < s_nMinPWM)
+    m_nPWM = s_nMinPWM;
+  else if(nPWM > s_nMaxPWM)
+    m_nPWM = s_nMaxPWM;
   else
     m_nPWM = nPWM;
   return m_nPWM;
