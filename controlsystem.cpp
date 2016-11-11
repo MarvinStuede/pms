@@ -2,9 +2,9 @@
 
 ControlSystem::ControlSystem(QObject *parent) :
     QObject(parent)
+  ,m_pMobilePlatform(new MobilePlatform())
+  ,m_pMainWindow(new MainWindow())
 {
-    m_pMobilePlatform = new MobilePlatform();
-    m_pMainWindow = new MainWindow();
 
     QObject::connect(m_pMainWindow,SIGNAL(sgnForward()),m_pMobilePlatform,SLOT(moveForward()));
     QObject::connect(m_pMainWindow,SIGNAL(sgnBackward()),m_pMobilePlatform,SLOT(moveBackward()));

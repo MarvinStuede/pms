@@ -56,28 +56,28 @@ void MobilePlatform::moveForward()
 {
   m_MotorLeft.forward();
   m_MotorRight.forward();
-  emit sgnLogMsg("Move Command: forward");
+  emit sgnLogMsg("Move Command: Forward");
 }
 
 void MobilePlatform::moveBackward()
 {
   m_MotorLeft.backward();
   m_MotorRight.backward();
-  emit sgnLogMsg("Move Command: backward");
+  emit sgnLogMsg("Move Command: Backward");
 }
 
 void MobilePlatform::turnLeft()
 {
   m_MotorLeft.stop();
   m_MotorRight.forward();
-  emit sgnLogMsg("Move Command: left");
+  emit sgnLogMsg("Move Command: Left");
 }
 
 void MobilePlatform::turnRight()
 {
   m_MotorLeft.forward();
   m_MotorRight.stop();
-  emit sgnLogMsg("Move Command: right");
+  emit sgnLogMsg("Move Command: Right");
 }
 
 void MobilePlatform::stopMotion()

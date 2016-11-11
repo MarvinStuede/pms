@@ -73,9 +73,9 @@ void MainWindow::logMessage(const QString &msg)
 
   else
   {
-      //Set selection to last entry
-     // QModelIndex vIndex = logging_model.index(logging_model.rowCount()-1);
-   //   ui->listOutput->setCurrentIndex(vIndex);
+    //Set selection to last entry
+    QModelIndex vIndex = logging_model.index(logging_model.rowCount()-1);
+    ui->listOutput->setCurrentIndex(vIndex);
 
   }
 }
